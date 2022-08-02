@@ -22,16 +22,9 @@ class ViewController: UIViewController {
     
     
     private lazy var image: UIImageView = {
-        //let image = UIImage(named: "person")
-       
-        let smallConfig = UIImage.SymbolConfiguration(scale: .medium)
-        let image = UIImage(systemName: "camera", withConfiguration: smallConfig)
-        
+        let image = UIImage(named: "person")
         let imageView = UIImageView()
-        //imageView.contentMode = UIView.ContentMode.scaleAspectFit
-        imageView.frame.size.width = 50
-       // imageView.frame.size.height = 50
-       // imageView.center = self.view.center
+        imageView.contentMode = UIView.ContentMode.scaleAspectFit
         imageView.layer.cornerRadius = Metric.buttonHeight / 2
         imageView.layer.masksToBounds = true
         
@@ -40,37 +33,36 @@ class ViewController: UIViewController {
     }()
     
     // Header
-    private lazy var headerStackView = createHorizontalStackView(Metric.stackSpacing)
-    private lazy var imageStackView = createHorizontalStackView(Metric.stackSpacing)
-    private lazy var emptyStackView = createHorizontalStackView(Metric.stackSpacing)
-    private lazy var textStackView = createVerticalStackView()
+    private lazy var headerStackView = createStackView(Strings.stackViewModeHorizontal)
+    private lazy var imageStackView = createStackView(Strings.stackViewModeHorizontal)
+    private lazy var emptyStackView = createStackView(Strings.stackViewModeHorizontal)
+    private lazy var textStackView = createStackView(Strings.stackViewModeVertical)
     
     private lazy var nameLabel = createLabel(with: "Алексей Павлов", titleColor: .white, fontSize: 20)
     private lazy var mainStatusLabel = createLabel(with: "Установить статус", titleColor: .systemBlue, fontSize: 15)
     private lazy var networkStatusLabel = createLabelWithIcon(with: "online", titleColor: .systemGray, fontSize: 14, icon: "network", iconPosition: "right")
-   // private lazy var emptyStatusLabel = createLabel(with: "3333333", titleColor: .systemGray, fontSize: 14)
+
     
     // Buttons
-    private lazy var buttonsStackView = createHorizontalStackView(Metric.stackSpacing)
+    private lazy var buttonsStackView = createStackView(Strings.stackViewModeHorizontal)
     private lazy var editButton = createButton(with: "Редактировать", titleColor: .white, backgroundColor: .darkGray)
     
     // Icons
-    private lazy var iconsStackView = createHorizontalStackView(Metric.stackSpacing)
-    private lazy var historyIcon = createIcon(with: "История", icon: "history")
-    private lazy var recordIcon = createIcon(with: "Запись", icon: "record")
-    private lazy var photoIcon = createIcon(with: "Фото", icon: "photo")
-    private lazy var clipIcon = createIcon(with: "Клип", icon: "clip")
+    private lazy var iconsStackView = createStackView(Strings.stackViewModeHorizontal)
+    private lazy var historyIcon = createIconWithText(with: "История", icon: "camera")
+    private lazy var recordIcon = createIconWithText(with: "Запись", icon: "note")
+    private lazy var photoIcon = createIconWithText(with: "Фото", icon: "photo")
+    private lazy var clipIcon = createIconWithText(with: "Клип", icon: "play.rectangle")
     
     //Info
-    private lazy var infoStackView = createVerticalStackView()
-    private lazy var cityText = createAdditionalInfo(with: "Город: Москва", textColor: .lightGray)
-    private lazy var followersText = createAdditionalInfo(with: "35 подписчиков", textColor: .lightGray)
-    private lazy var jobText = createAdditionalInfo(with: "Указать место работы", textColor: .lightGray)
-    private lazy var presentText = createAdditionalInfo(with: "Получить подарок", textColor: .lightGray)
-    private lazy var infoText = createAdditionalInfo(with: "Подробная информация", textColor: .lightGray)
+    private lazy var infoStackView = createStackView(Strings.stackViewModeVertical)
+    private lazy var cityText = createLabelWithIcon(with: "Город: Москва", titleColor: Metric.infoTextColor, fontSize: 13, icon: "house.fill", iconPosition: "left")
+    private lazy var followersText = createLabelWithIcon(with: "35 подписчиков", titleColor: Metric.infoTextColor, fontSize: 13, icon: "custom.wifi", iconPosition: "left")
+    private lazy var jobText = createLabelWithIcon(with: "Указать место работы", titleColor: Metric.infoTextColor, fontSize: 13, icon: "bag", iconPosition: "left")
+    private lazy var presentText = createLabelWithIcon(with: "Получить подарок", titleColor: Metric.infoTextColor, fontSize: 13, icon: "snowflake", iconPosition: "left")
+    //private lazy var infoText = createLabelWithIcon(with: "Подробная информация", titleColor: Metric.infoTextColor, fontSize: 13, icon: "info.circle.fill", iconPosition: "left")
     
     // MARK: - Main
-    // MAIN
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
@@ -115,7 +107,7 @@ class ViewController: UIViewController {
         infoStackView.addArrangedSubview(followersText)
         infoStackView.addArrangedSubview(jobText)
         infoStackView.addArrangedSubview(presentText)
-        infoStackView.addArrangedSubview(infoText)
+        //infoStackView.addArrangedSubview(infoText)
     }
     
     private func setupLayout() {
@@ -126,35 +118,51 @@ class ViewController: UIViewController {
         headerStackView.heightAnchor.constraint(equalToConstant: Metric.buttonHeight).isActive = true
         buttonsStackView.heightAnchor.constraint(equalToConstant: Metric.buttonHeight).isActive = true
         iconsStackView.heightAnchor.constraint(equalToConstant: Metric.buttonHeight).isActive = true
-        infoStackView.heightAnchor.constraint(equalToConstant: Metric.buttonHeight).isActive = true
+        infoStackView.heightAnchor.constraint(equalToConstant: Metric.infoHeight).isActive = true
     
        }
     
     // MARK: - Functions
     
-    private func createHorizontalStackView(_ spacing: CGFloat) -> UIStackView {
+    private func createStackView(_ mode: String) -> UIStackView {
         let stackView = UIStackView()
-        stackView.axis = .horizontal
         stackView.distribution = .equalSpacing
-        stackView.spacing = spacing //.15
+        
+        if mode == Strings.stackViewModeHorizontal {
+            stackView.axis = .horizontal
+            stackView.spacing = Metric.stackSpacing
+        } else {
+            stackView.axis = .vertical
+        }
+        
         return stackView
     }
     
-    private func createVerticalStackView() -> UIStackView {
+    
+    private func createIconWithText(with title: String, icon: String) -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.distribution = .equalSpacing
-        return stackView
-    }
-    
-    
-    private func createIcon(with title: String, icon: String) -> UILabel {
+       
+        let smallConfig = UIImage.SymbolConfiguration(scale: .small)
+        let image = UIImage(systemName: icon, withConfiguration: smallConfig)
+        
+        // icon image
+        let imageView = UIImageView()
+        imageView.contentMode = UIView.ContentMode.scaleAspectFit
+        imageView.layer.masksToBounds = true
+        imageView.image = image
+        stackView.addArrangedSubview(imageView)
+        
+        // icpn text
         let label = UILabel()
         label.text = title
         label.font = .systemFont(ofSize: Metric.iconFontSize, weight: .light)
         label.textColor = Metric.iconFontColor
         label.textAlignment = .center
-        return label
+        stackView.addArrangedSubview(label)
+
+        return stackView
+        
     }
     
     private func createLabel(with title: String, titleColor: UIColor, fontSize: CGFloat) -> UILabel {
@@ -169,25 +177,26 @@ class ViewController: UIViewController {
     private func createLabelWithIcon(with title: String, titleColor: UIColor, fontSize: CGFloat, icon: String, iconPosition: String) -> UIStackView {
         
         let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = Metric.parentStackViewSpacing
-        stackView.distribution = .fillEqually
-            
-    
-        
+        stackView.axis = .horizontal
+       
         let smallConfig = UIImage.SymbolConfiguration(scale: .small)
-        //let image = UIImage(systemName: icon, withConfiguration: smallConfig)
-        let image = UIImage(systemName: "custom.wifi", withConfiguration: smallConfig)
+        let image = UIImage(systemName: icon, withConfiguration: smallConfig)
+        
+        // icon image
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = 1
+        imageView.contentMode = UIView.ContentMode.scaleAspectFit
+
         imageView.layer.masksToBounds = true
         imageView.image = image
+        stackView.addArrangedSubview(imageView)
         
+        // icon text
         let label = UILabel()
         label.text = title
-        label.font = .systemFont(ofSize: fontSize, weight: .light)
-        label.textColor = titleColor
+        label.font = .systemFont(ofSize: Metric.iconFontSize, weight: .light)
+        label.textColor = Metric.iconFontColor
         label.textAlignment = .left
+        stackView.addArrangedSubview(label)
         
         if iconPosition == "right" {
             stackView.addArrangedSubview(label)
@@ -213,15 +222,6 @@ class ViewController: UIViewController {
         return button
     }
 
-    private func createAdditionalInfo(with title: String, textColor: UIColor) -> UILabel {
-        let label = UILabel()
-        label.text = title
-        label.font = .systemFont(ofSize: Metric.iconFontSize, weight: .light)
-        label.textColor = textColor
-        label.textAlignment = .left
-        return label
-    }
-
 }
 
 // MARK: - Constants
@@ -231,26 +231,27 @@ extension ViewController {
         
         static let iconFontSize: CGFloat = 15
         static let iconFontColor: UIColor = .systemBlue
+        static let infoTextColor: UIColor = .lightGray
         static let infoFontSize: CGFloat = 20
         static let stackSpacing: CGFloat = 15
         
-        
-        
-        
         static let buttonHeight: CGFloat = 75
-        static let parentStackViewSpacing: CGFloat = 30
+        static let infoHeight: CGFloat = 100
+        
+        static let parentStackViewSpacing: CGFloat = 20
         static let buttonsStackViewSpacing: CGFloat = 15
-        static let resultFontSize: CGFloat = 70
+    
         static let buttonFontSize: CGFloat = 30
         
         static let leftOffset: CGFloat = 18
         static let rightOffset: CGFloat = -18
-        static let buttomOffset: CGFloat = -350
+        static let buttomOffset: CGFloat = -300
         
     }
     
     enum Strings {
-        
+        static let stackViewModeHorizontal: String = "horizontal"
+        static let stackViewModeVertical: String = "vertical"
     }
 }
 
